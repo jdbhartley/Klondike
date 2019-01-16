@@ -13,11 +13,22 @@
 #include <cstring> //memcpy
 using namespace std;
 
+//Function Prototypes
+string GetRules();
+vector<char> RollDice();
+
+//Structs
+struct hand { char val; string desc; };
+
+//Main Function
 int main(int argc, char** argv) {
     //Set the random seed
     srand(time(0));
 
     //Variables
+    hand        bHand,      //Banker Hand 
+                pHand;      //Player Hand
+    
     char        menuSel,    //Menu Selection   
                 pPairs,     //Player pairs.
                 pPairs2,
@@ -30,14 +41,11 @@ int main(int argc, char** argv) {
                 bValue2,
                 bHand;      //Banker hand value
     
-    ifstream    ifs;        //Input File stream.
+    //int         pDie[5], pDieT[5], //Dice and temp dice for player.
+    //            bDie[5], bDieT[5]; //Dice and temp dice for banker.
     
-    string      rules;      //Rules.
-    
-    short       lineCnt;    //Rules Line Count
-    
-    int         pDie[5], pDieT[5], //Dice and temp dice for player.
-                bDie[5], bDieT[5]; //Dice and temp dice for banker.
+    vector<char>    pDie,   //Player Dice.
+                    bDie;   //Banker Dice.
     
     float       money,      //Amount of money the player has.
                 betAmt;     //Amount of bet.
@@ -79,10 +87,9 @@ int main(int argc, char** argv) {
                 cout << "Enter your bet: $";
                 cin >> betAmt;
                 cout << "Banker Rolls" << endl;
+                
                 //Roll the dice for the banker
-                for (int i = 0; i < 5; i++) {
-                    bDie[i] = rand()%6+1;
-                }
+                bDie = RollDice();
 
                 //Display dice roll for the banker
                 for (int i = 0; i < 5; i++) {
@@ -312,22 +319,48 @@ int main(int argc, char** argv) {
             break;
         case 'R':
             //Display Rules
-            ifs.open("rules.dat");
-            ifs >> lineCnt; //Get line count from first line in rules.dat
-            for (int i = 0; i < lineCnt; i++) {
-                getline(ifs, rules);
-                cout << rules << endl;
-            }
-            ifs.close();
-            cout << endl << endl << "Restart the game to play" << endl;
+            cout << GetRules() << endl;
             break;
         case 'E':
             //Exit
             cout << "Goodbye!";
-            return 0;
+            break;
     }
     
     //Exit
     return 0;
+}
+
+hand CalcHand()
+{
+    hand result; //Resulting hand
+}
+
+
+vector<char> RollDice()
+{
+    vector<char> result; //Resulting vector.
+    for (int i = 0; i < 5; i++) {
+        result.push_back(rand()%6+1);
+    }
+}
+
+string GetRules()
+{
+    ifstream ifs;       //Input File stream.
+    string temp;        //Temporary string for building result
+    string result = ""; //Resulting string
+    
+    //Open the file stream
+    ifs.open("rules.dat");
+   
+    //Loop through and add the text into the string.
+    while (!ifs.eof()) {
+        getline(ifs, temp);
+        result += temp;
+        result += '\n';
+    }
+    ifs.close();
+    return result;
 }
 
