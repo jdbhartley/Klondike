@@ -13,12 +13,13 @@
 #include <cstring> //memcpy
 using namespace std;
 
+//Structs
+struct hand { char val; string desc; };
+
 //Function Prototypes
 string GetRules();
 vector<char> RollDice();
-
-//Structs
-struct hand { char val; string desc; };
+hand CalcHand(vector<char>);
 
 //Main Function
 int main(int argc, char** argv) {
@@ -199,98 +200,9 @@ int main(int argc, char** argv) {
                 for (int i = 0; i < 5; i++) {
                     cout << static_cast<short>(pDie[i]) << " "; 
                 }
-
-                //Check for pairs for the banker
-                memcpy(pDieT, pDie, sizeof(pDie)); //Copy the rolled array to the temp array so we can remove doubles as we go.
-                //This gruesome piece of code loops through the dice array to find multiples and stores their value for scoring.
-                for (int i = 0; i < 5; i++) {
-                    for (int j = i + 1; j < 5; j++) {
-                        if (pDieT[i] == pDieT[j]) {
-                            //We got a match
-                            if (pValue == 0 && pValue2 == 0) {
-                                //This is the first pair found.
-                                pPairs = 1;
-                                pValue = pDieT[i];
-                                pPairs++;
-                                pDieT[i] = -1; //Counted.
-                            }
-                            else if (pValue == pDieT[i]) {
-                                //Same value of die
-                                pPairs++;
-                                pDieT[i] = -1; //Counted.
-                            }
-                            else if (pValue != 0 && pValue2 == 0) {
-                                //Storing value 2 of die
-                                pValue2 = bDieT[i];
-                                pPairs2 = 1;
-                                pPairs2++;
-                                pDieT[i] = -1; //Counted.
-                            }
-                            else if (pValue != 0 && pValue2 == pDieT[i]) {
-                                //Storing value 2 of die if multiples.
-                                pPairs2++;
-                                pDieT[i] = -1; //Counted.
-                            }
-                        }
-                    }
-                }
-                if (pPairs == 5 || pPairs2 == 5) { //FIVE OF A KIND WORTH 60 POINTS
-                    //Display Output
-                     cout << endl << "Player has: " << static_cast<short>(pPairs) << " " << 
-                        static_cast<short>(pValue) << "'s." << endl << "FIVE OF A KIND!" << endl;
-
-                     //Set hand worth
-                     pHand = 60 + pValue + pValue2;
-                }
-                else if (pPairs == 4 || pPairs2 == 4) { //FOUR OF A KIND WORTH 50 POINTS
-                    //Display output
-                     cout << endl << "Player has: " << static_cast<short>(pPairs) << " " << 
-                        static_cast<short>(pValue) << "'s." << endl << "FOUR OF A KIND!" << endl;
-
-                     //Set hand worth
-                     pHand = 50 + pValue + pValue2;
-                }
-                else if (pPairs == 3 && pPairs2 == 2 || pPairs2 == 3 && pPairs == 2) { //FULL HOUSE WORTH 40 POINTS
-                    //Display output
-                    cout << endl << "Player has: " << static_cast<short>(pPairs) << " " << 
-                            static_cast<short>(pValue) << "'s and " << static_cast<short>(pPairs2) 
-                            << " " << static_cast<short>(pValue2) << "'s." << endl << "FULL HOUSE!" << endl;
-
-                    //Set hand worth
-                    pHand = 40 + pValue + pValue2;
-                }
-                else if (pPairs == 3 || pPairs2 == 3) { //THREE OF A KIND WORTH 30 POINTS
-                    //Display output
-                     cout << endl << "Player has: " << static_cast<short>(pPairs) << " " << 
-                        static_cast<short>(pValue) << "'s." << endl << "THREE OF A KIND!" << endl;
-
-                     //Set hand worth
-                     pHand = 30 + pValue + pValue2;
-                }
-                else if (pPairs == 2 && pPairs2 == 2) { //TWO PAIR WORTH 20 POINTS
-                    //Display output
-                    cout << endl << "Player has: " << static_cast<short>(pPairs) << " " << 
-                        static_cast<short>(pValue) << "'s and " << static_cast<short>(pPairs2) 
-                        << " " << static_cast<short>(pValue2) << "'s." << endl << "TWO PAIRS!" << endl;
-
-                    //Set hand worth
-                    pHand = 20 + pValue + pValue2;
-                }
-                else if (pPairs > 1 || pPairs2 > 1) { //ONE PAIR WORTH 10 POINTS
-                    //Display output
-                    cout << endl << "Player has: " << static_cast<short>(pPairs) << " " << 
-                        static_cast<short>(pValue) << "'s." << endl << "ONE PAIR!" << endl;
-
-                    //Set hand worth
-                    pHand = 10 + pValue + pValue2;
-                }
-                else {
-                    //Display output
-                    cout << endl << "Player has no pairs!" << endl;
-
-                    //Set hand worth
-                    pHand = 0;
-                }
+                
+                //Display hand description
+                cout << CalcHand(pDie).desc;
 
                 //Determine winner
                 if (pHand > bHand) { 
@@ -331,9 +243,94 @@ int main(int argc, char** argv) {
     return 0;
 }
 
-hand CalcHand()
+hand CalcHand(vector<char> dice)
 {
     hand result; //Resulting hand
+    char value1, value2, pairs1, pairs2 = 0;
+
+    //Check for pairs for the banker
+    //This gruesome piece of code loops through the dice array to find multiples and stores their value for scoring.
+    for (int i = 0; i < 5; i++) {
+        for (int j = i + 1; j < 5; j++) {
+            if (dice[i] == dice[j]) {
+                //We got a match
+                if (value1 == 0 && value2 == 0) {
+                    //This is the first pair found.
+                    pairs1 = 1;
+                    value1 = dice[i];
+                    pairs1++;
+                    dice[i] = -1; //Counted.
+                } else if (value1 == dice[i]) {
+                    //Same value of die
+                    pairs1++;
+                    dice[i] = -1; //Counted.
+                } else if (value1 != 0 && value2 == 0) {
+                    //Storing value 2 of die
+                    value2 = dice[i];
+                    pairs2 = 1;
+                    pairs2++;
+                    dice[i] = -1; //Counted.
+                } else if (value1 != 0 && value2 == dice[i]) {
+                    //Storing value 2 of die if multiples.
+                    pairs2++;
+                    dice[i] = -1; //Counted.
+                }
+            }
+        }
+    }
+    if (pairs1 == 5 || pairs2 == 5) { //FIVE OF A KIND WORTH 60 POINTS
+        //Set description
+        result.desc = '\n' + "Player has: " + static_cast<short> pairs1 + " " +
+                static_cast<short> (value1) + "'s." + '\n' + "FIVE OF A KIND!" + '\n';
+
+        //Set hand worth
+        result.val = 60 + value1 + value2;
+    } else if (pairs1 == 4 || pairs2 == 4) { //FOUR OF A KIND WORTH 50 POINTS
+        //Display output
+        result.desc = '\n' + "Player has: " + static_cast<short> (pairs1) + " " +
+                static_cast<short> (value1) + "'s." + '\n' + "FOUR OF A KIND!" + '\n';
+
+        //Set hand worth
+        result.val = 50 + value1 + value2;
+    } else if (pairs1 == 3 && pairs2 == 2 || pairs2 == 3 && pairs1 == 2) { //FULL HOUSE WORTH 40 POINTS
+        //Display output
+        result.desc = '\n' + "Player has: " + static_cast<short> (pairs1) + " " +
+                static_cast<short> (value1) + "'s and " + static_cast<short> (pairs2)
+                + " " + static_cast<short> (value2) + "'s." + '\n' + "FULL HOUSE!" + '\n';
+
+        //Set hand worth
+        result.val = 40 + value1 + value2;
+    } else if (pairs1 == 3 || pairs2 == 3) { //THREE OF A KIND WORTH 30 POINTS
+        //Display output
+        result.desc = '\n' + "Player has: " + static_cast<short> (pairs1) + " " +
+                static_cast<short> (value1) + "'s." + '\n' + "THREE OF A KIND!" + '\n';
+
+        //Set hand worth
+        result.val = 30 + value1 + value2;
+    } else if (pairs1 == 2 && pairs2 == 2) { //TWO PAIR WORTH 20 POINTS
+        //Display output
+        result.desc = '\n' + "Player has: " + static_cast<short> (pairs1) + " " +
+                static_cast<short> (value1) + "'s and " + static_cast<short> (pairs2)
+                + " " + static_cast<short> (value2) + "'s." + '\n' + "TWO PAIRS!" + '\n';
+
+        //Set hand worth
+        result.val = 20 + value1 + value2;
+    } else if (pairs1 > 1 || pairs2 > 1) { //ONE PAIR WORTH 10 POINTS
+        //Display output
+        result.desc = '\n' + "Player has: " + static_cast<short> (pairs1) + " " +
+                static_cast<short> (value1) + "'s." + '\n' + "ONE PAIR!" + '\n';
+
+        //Set hand worth
+        result.val = 10 + value1 + value2;
+    } else {
+        //Display output
+        result.desc = '\n' + "Player has no pairs!" + '\n';
+
+        //Set hand worth
+        result.val = 0;
+    }
+    
+    return result;
 }
 
 
