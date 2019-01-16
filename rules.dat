@@ -1,0 +1,13 @@
+13
+Klondike
+This is a gambling game that was played in cheap casinos in frontier America, using five dice.  The combinations or hands used are similar to Poker but with some omissions.
+
+Play:
+A banker rolls the dice first and the player then roll the dice trying to beat the combination first thrown.  Only one throw is allowed. Numbers rank high to low as 1, 6, 5, 4, 3, 2.  Any die not used in a combination is ignored.  If a player rolls a combination equal to the banker's, the banker wins. The payoffs are made by the banker at even odds. i.e. player gets their stake back with an equal amount.  Winning combinations in descending order are as follows.
+
+Five-of-a-kind
+Four-of-a-kind
+Full House (Three-of-a-kind and a pair)
+Three-of-a-kind
+Two pairs
+One pair
