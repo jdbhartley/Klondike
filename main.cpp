@@ -89,7 +89,7 @@ int main(int argc, char** argv) {
                 bHand = CalcHand(bDie);
                 
                 //Display hand description for the banker
-                cout << bHand.desc;
+                cout << endl << bHand.desc << endl;
 
                 //Players Roll ---------------
                 cout << "Player Rolls" << endl;
@@ -106,15 +106,18 @@ int main(int argc, char** argv) {
                 pHand = CalcHand(pDie);
                 
                 //Display hand description
-                cout << pHand.desc;
+                cout << endl << pHand.desc << endl;
 
                 //Determine winner
                 if (pHand.val > bHand.val) { 
                     cout << "Player Wins!";
                     money += (betAmt*2);
                 }
+                else if (pHand.val == bHand.val) {
+                    cout << "It's a Tie!";
+                }
                 else {
-                    cout << "Banker Wins!";
+                    cout << "Banker Wins.";
                     money -= betAmt;
                 }
                 
@@ -150,7 +153,7 @@ int main(int argc, char** argv) {
 hand CalcHand(vector<char> dice)
 {
     hand result; //Resulting hand
-    short value1, value2, pairs1, pairs2 = 0;
+    char value1, value2, pairs1, pairs2 = 0;
 
     //Check for pairs for the banker
     //This gruesome piece of code loops through the dice array to find multiples and stores their value for scoring.
@@ -184,53 +187,51 @@ hand CalcHand(vector<char> dice)
     }
     if (pairs1 == 5 || pairs2 == 5) { //FIVE OF A KIND WORTH 60 POINTS
         //Set description
-        result.desc = '\n' + string("Test") + string("Test") + std::to_string(pairs1);
-        //result.desc = '\n' + string("Player has: ") + static_cast<string>(pairs1) + string(" ") + 
-        //        static_cast<string>(value1) + string("'s.") + string('\n') + string("FIVE OF A KIND!") + string('\n');
+        result.desc = "FIVE OF A KIND!";
 
         //Set hand worth
         result.val = 60 + value1 + value2;
     } else if (pairs1 == 4 || pairs2 == 4) { //FOUR OF A KIND WORTH 50 POINTS
         //Display output
-        result.desc = '\n' + "Player has: " + static_cast<short>(pairs1) + " " +
-                static_cast<short> (value1) + "'s." + '\n' + "FOUR OF A KIND!" + '\n';
-
+        //result.desc = '\n' + string("Player has: ") + to_string(pairs1) + string(" ") +
+               //to_string(value1) + string("'s.") + string('\n') + string("FOUR OF A KIND!") + string('\n');
+        result.desc = "FOUR OF A KIND!";
         //Set hand worth
         result.val = 50 + value1 + value2;
     } else if (pairs1 == 3 && pairs2 == 2 || pairs2 == 3 && pairs1 == 2) { //FULL HOUSE WORTH 40 POINTS
         //Display output
-        result.desc = '\n' + "Player has: " + static_cast<short> (pairs1) + " " +
-                static_cast<short> (value1) + "'s and " + static_cast<short> (pairs2)
-                + " " + static_cast<short> (value2) + "'s." + '\n' + "FULL HOUSE!" + '\n';
-
+        //result.desc = '\n' + string("Player has: ") + to_string(pairs1) + string(" ") +
+                //to_string(value1) + string("'s and ") + to_string(pairs2)
+                //+ string(" ") + to_string(value2) + string("'s.") + string('\n') + string("FULL HOUSE!") + string('\n');
+        result.desc = "FULL HOUSE!";
         //Set hand worth
         result.val = 40 + value1 + value2;
     } else if (pairs1 == 3 || pairs2 == 3) { //THREE OF A KIND WORTH 30 POINTS
         //Display output
-        result.desc = '\n' + "Player has: " + static_cast<short> (pairs1) + " " +
-                static_cast<short> (value1) + "'s." + '\n' + "THREE OF A KIND!" + '\n';
-
+        //result.desc = '\n' + string("Player has: ") + to_string(pairs1) + string(" ") +
+                //to_string(value1) + string("'s.") + string('\n') + string("THREE OF A KIND!") + string('\n');
+        result.desc = "THREE OF A KIND!";
         //Set hand worth
         result.val = 30 + value1 + value2;
     } else if (pairs1 == 2 && pairs2 == 2) { //TWO PAIR WORTH 20 POINTS
         //Display output
-        result.desc = '\n' + "Player has: " + static_cast<short> (pairs1) + " " +
-                static_cast<short> (value1) + "'s and " + static_cast<short> (pairs2)
-                + " " + static_cast<short> (value2) + "'s." + '\n' + "TWO PAIRS!" + '\n';
-
+        //result.desc = '\n' + string("Player has: ") + to_string(pairs1) + string(" ") +
+        //        to_string(value1) + string("'s and ") + to_string(pairs2)
+        //        + string(" ") + to_string(value2) + string("'s.") + string('\n') + string("TWO PAIRS!") + string('\n');
+        result.desc = "TWO PAIRS!";
         //Set hand worth
         result.val = 20 + value1 + value2;
     } else if (pairs1 > 1 || pairs2 > 1) { //ONE PAIR WORTH 10 POINTS
         //Display output
-        result.desc = '\n' + "Player has: " + static_cast<short> (pairs1) + " " +
-                static_cast<short> (value1) + "'s." + '\n' + "ONE PAIR!" + '\n';
-
+        //result.desc = '\n' + string("Player has: ") + to_string(pairs1) + string(" ") +
+        //        to_string(value1) + string("'s.") + string('\n') + string("ONE PAIR!") + string('\n');
+        result.desc = "ONE PAIR!";
         //Set hand worth
         result.val = 10 + value1 + value2;
     } else {
         //Display output
-        result.desc = '\n' + "Player has no pairs!" + '\n';
-
+        //result.desc = '\n' + string("Player has no pairs!") + string('\n');
+        result.desc = "No Pairs.";
         //Set hand worth
         result.val = 0;
     }
@@ -245,6 +246,7 @@ vector<char> RollDice()
     for (int i = 0; i < 5; i++) {
         result.push_back(rand()%6+1);
     }
+    return result;
 }
 
 string GetRules()
