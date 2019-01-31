@@ -22,6 +22,7 @@ struct hand { char val; string desc; };
 string GetRules();
 vector<char> RollDice();
 hand CalcHand(vector<char>);
+void PlayGame(float &, float &, vector<char> &, vector<char> &, hand &, hand &);
 
 //Main Function
 int main(int argc, char** argv) {
@@ -29,7 +30,7 @@ int main(int argc, char** argv) {
     srand(time(0));
 
     //Variables
-    hand        bHand,      //Banker Hand 
+    hand        bHand,      //Banker Hand
                 pHand;      //Player Hand
     
     char        menuSel;    //Menu Selection   
@@ -41,6 +42,8 @@ int main(int argc, char** argv) {
                 betAmt;     //Amount of bet.
     
     bool        play;       //Are we currently playing the game?
+    
+    string      name;       //Players name
     
     //Initialize
     play = false;
@@ -71,55 +74,7 @@ int main(int argc, char** argv) {
             while (play && money > 0)
             {
                 //Play the game
-                cout << "         -------------         " << endl;
-                cout << "Your Money: $" << money << endl;
-                cout << "Enter your bet: $";
-                cin >> betAmt;
-                cout << "Banker Rolls" << endl;
-                
-                //Roll the dice for the banker
-                bDie = RollDice();
-
-                //Display dice roll for the banker
-                for (int i = 0; i < 5; i++) {
-                    cout << static_cast<short>(bDie[i]) << " "; 
-                }
-                
-                //Calculate the banker hand value
-                bHand = CalcHand(bDie);
-                
-                //Display hand description for the banker
-                cout << endl << bHand.desc << endl;
-
-                //Players Roll ---------------
-                cout << "Player Rolls" << endl;
-                
-                //Roll the dice for the player
-                pDie = RollDice();
-
-                //Display dice roll for the player
-                for (int i = 0; i < 5; i++) {
-                    cout << static_cast<short>(pDie[i]) << " "; 
-                }
-                
-                //Calculate player hand value
-                pHand = CalcHand(pDie);
-                
-                //Display hand description
-                cout << endl << pHand.desc << endl;
-
-                //Determine winner
-                if (pHand.val > bHand.val) { 
-                    cout << "Player Wins!";
-                    money += (betAmt*2);
-                }
-                else if (pHand.val == bHand.val) {
-                    cout << "It's a Tie!";
-                }
-                else {
-                    cout << "Banker Wins.";
-                    money -= betAmt;
-                }
+                PlayGame(money, betAmt, bDie, pDie, pHand, bHand);
                 
                 //Ask to play again
                 if (money > 0) {
@@ -127,6 +82,7 @@ int main(int argc, char** argv) {
                 }
                 else {
                     cout << endl << "Game Over! You ran out of money.";
+                    cout << endl << "Would you like to restart?";
                     play = false;
                 }
                 
@@ -193,45 +149,67 @@ hand CalcHand(vector<char> dice)
         result.val = 60 + value1 + value2;
     } else if (pairs1 == 4 || pairs2 == 4) { //FOUR OF A KIND WORTH 50 POINTS
         //Display output
-        //result.desc = '\n' + string("Player has: ") + to_string(pairs1) + string(" ") +
-               //to_string(value1) + string("'s.") + string('\n') + string("FOUR OF A KIND!") + string('\n');
-        result.desc = "FOUR OF A KIND!";
+        result.desc.append("\nPlayer has: ");
+        result.desc.append(to_string(pairs1)); 
+        result.desc.append(" ");
+        result.desc.append(to_string(value1));
+        result.desc.append("'s.");
+        result.desc.append("\nFOUR OF A KIND!\n");
+        
         //Set hand worth
         result.val = 50 + value1 + value2;
     } else if (pairs1 == 3 && pairs2 == 2 || pairs2 == 3 && pairs1 == 2) { //FULL HOUSE WORTH 40 POINTS
         //Display output
-        //result.desc = '\n' + string("Player has: ") + to_string(pairs1) + string(" ") +
-                //to_string(value1) + string("'s and ") + to_string(pairs2)
-                //+ string(" ") + to_string(value2) + string("'s.") + string('\n') + string("FULL HOUSE!") + string('\n');
-        result.desc = "FULL HOUSE!";
+        result.desc.append("\nPlayer has: ");
+        result.desc.append(to_string(pairs1)); 
+        result.desc.append(" ");
+        result.desc.append(to_string(value1));
+        result.desc.append("'s. and ");
+        result.desc.append(to_string(pairs2));
+        result.desc.append(" ");
+        result.desc.append(to_string(value2));
+        result.desc.append("'s.");
+        result.desc.append("\nFULL HOUSE!\n");
+        
         //Set hand worth
         result.val = 40 + value1 + value2;
     } else if (pairs1 == 3 || pairs2 == 3) { //THREE OF A KIND WORTH 30 POINTS
         //Display output
-        //result.desc = '\n' + string("Player has: ") + to_string(pairs1) + string(" ") +
-                //to_string(value1) + string("'s.") + string('\n') + string("THREE OF A KIND!") + string('\n');
-        result.desc = "THREE OF A KIND!";
+        result.desc.append("\nPlayer has: ");
+        result.desc.append(to_string(pairs1)); 
+        result.desc.append(" ");
+        result.desc.append(to_string(value1));
+        result.desc.append("'s.");
+        result.desc.append("\nTHREE OF A KIND!\n");
         //Set hand worth
         result.val = 30 + value1 + value2;
     } else if (pairs1 == 2 && pairs2 == 2) { //TWO PAIR WORTH 20 POINTS
         //Display output
-        //result.desc = '\n' + string("Player has: ") + to_string(pairs1) + string(" ") +
-        //        to_string(value1) + string("'s and ") + to_string(pairs2)
-        //        + string(" ") + to_string(value2) + string("'s.") + string('\n') + string("TWO PAIRS!") + string('\n');
-        result.desc = "TWO PAIRS!";
+        result.desc.append("\nPlayer has: ");
+        result.desc.append(to_string(pairs1)); 
+        result.desc.append(" ");
+        result.desc.append(to_string(value1));
+        result.desc.append("'s. and ");
+        result.desc.append(to_string(pairs2));
+        result.desc.append(" ");
+        result.desc.append(to_string(value2));
+        result.desc.append("'s.");
+        result.desc.append("\nTWO PAIRS!\n");
         //Set hand worth
         result.val = 20 + value1 + value2;
     } else if (pairs1 > 1 || pairs2 > 1) { //ONE PAIR WORTH 10 POINTS
         //Display output
-        //result.desc = '\n' + string("Player has: ") + to_string(pairs1) + string(" ") +
-        //        to_string(value1) + string("'s.") + string('\n') + string("ONE PAIR!") + string('\n');
-        result.desc = "ONE PAIR!";
+        //Display output
+        result.desc.append("\nPlayer has: ");
+        result.desc.append(to_string(pairs1)); 
+        result.desc.append(" ");
+        result.desc.append(to_string(value1));
+        result.desc.append("'s.");
+        result.desc.append("\nONE PAIR!\n");
         //Set hand worth
         result.val = 10 + value1 + value2;
     } else {
-        //Display output
-        //result.desc = '\n' + string("Player has no pairs!") + string('\n');
-        result.desc = "No Pairs.";
+        result.desc = "Player has no pairs.";
         //Set hand worth
         result.val = 0;
     }
@@ -239,14 +217,98 @@ hand CalcHand(vector<char> dice)
     return result;
 }
 
+void PlayGame(float &money, float &betAmt, vector<char> &bDie, vector<char> &pDie, hand &pHand, hand &bHand) 
+{
+    //Play the game
+                cout << "         -------------         " << endl;
+                cout << "Your Money: $" << money << endl;
+                cout << "Enter your bet: $";
+                cin >> betAmt;
+                cout << "Banker Rolls" << endl;
+                
+                //Roll the dice for the banker
+                bDie = RollDice();
+
+                //Display dice roll for the banker
+                for (int i = 0; i < 5; i++) {
+                    cout << static_cast<short>(bDie[i]) << " "; 
+                }
+                
+                //Calculate the banker hand value
+                bHand = CalcHand(bDie);
+                
+                //Display hand description for the banker
+                cout << endl << bHand.desc << endl;
+
+                //Players Roll ---------------
+                cout << "Player Rolls" << endl;
+                
+                //Roll the dice for the player
+                pDie = RollDice();
+
+                //Display dice roll for the player
+                for (int i = 0; i < 5; i++) {
+                    cout << static_cast<short>(pDie[i]) << " "; 
+                }
+                
+                //Calculate player hand value
+                pHand = CalcHand(pDie);
+                
+                //Display hand description
+                cout << endl << pHand.desc << endl;
+
+                //Determine winner
+                if (pHand.val > bHand.val) { 
+                    cout << "Player Wins!";
+                    money += (betAmt*2);
+                }
+                else if (pHand.val == bHand.val) {
+                    cout << "It's a Tie!";
+                }
+                else {
+                    cout << "Banker Wins.";
+                    money -= betAmt;
+                }
+}
+
 
 vector<char> RollDice()
 {
+    //This rolls the dice and returns a vector containing the roll
     vector<char> result; //Resulting vector.
     for (int i = 0; i < 5; i++) {
         result.push_back(rand()%6+1);
     }
     return result;
+}
+
+void SaveGame(string name, float money)
+{
+    ofstream ofs;       //Output File stream.
+    
+    //Open the file stream
+    ofs.open("save.dat");
+   
+    //Save Player name and money
+    ofs << name << money;
+
+    //close the file stream
+    ofs.close();
+}
+
+void LoadGame(string &name, float &money) 
+{
+    ifstream ifs;       //Input File stream.
+    
+    //Open the file stream
+    ifs.open("save.dat");
+   
+    //Get player name from line 1 and player money from line 2
+    getline(ifs, name);
+    getline(ifs, money);
+    
+    //close the file stream
+    ifs.close();
 }
 
 string GetRules()
@@ -264,7 +326,11 @@ string GetRules()
         result += temp;
         result += '\n';
     }
+    
+    //close the file stream
     ifs.close();
+    
+    //return the rules string
     return result;
 }
 
