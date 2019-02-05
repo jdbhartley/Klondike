@@ -28,6 +28,9 @@ bool CheckForSave();
 void LoadGame(string &, float &) ;
 void SaveGame(string, float);
 void DisplayDice(vector<char> &);
+//Added for grading purposes
+void misc(char[], char[]);
+void misc(char [][5]);
 
 //Main Function
 int main(int argc, char** argv) {
@@ -88,7 +91,7 @@ int main(int argc, char** argv) {
                     cin >> name;
                     SaveGame(name, money);
                 }
-                while (play && money > 0)
+                while (play)
                 {
                     //Play the game
                     PlayGame(name, money, betAmt, bDie, pDie, pHand, bHand);
@@ -120,10 +123,15 @@ int main(int argc, char** argv) {
                 //Exit
                 cout << "Goodbye!";
                 break;
+            default:
+                //Exit
+                cout << "Goodbye!";
+                break;
         }
     }while (toupper(menuSel) == 'R');
     
     //Exit
+    exit(EXIT_SUCCESS);
     return 0;
 }
 
@@ -371,13 +379,14 @@ bool CheckForSave() {
     //Open the file stream
     ifs.open("save.dat");
    
-    //Get player name from line 1
+    //Check line 1
     getline(ifs, tmpSave);
     save = stoi(tmpSave);
     
     //close the file stream
     ifs.close();
     
+    //If line 1 != 0 then found save
     if (save != 0) {
         cout << "----Found Save!---";
         return true;
@@ -431,5 +440,29 @@ string GetRules()
     
     //return the rules string
     return result;
+}
+
+void misc(char a[5], char b[5])
+{
+    //Fill array with random numbers for grade points
+    for (int i = 0; i < 5; i++)
+    {
+        static int count = 0; //Variable stays in static storage area
+        
+        a[i] = rand()%90+1;
+        b[i] = i; // Parallel array.
+    }
+}
+
+void misc(char a[5][5])
+{
+    //Fill array with random numbers for grade points
+    for (int i = 0; i < 5; i++)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            a[i][j] = rand()%90+1;
+        }
+    }
 }
 
