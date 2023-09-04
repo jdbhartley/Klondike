@@ -1,15 +1,24 @@
 # 🎲 Klondike: The Dice Game
-
-This is a simple dice game where the player tries to score higher than the banker. The game is played with 5 dice.
-
 ![Klondike](screenshot.png)
 
-## How to Play
+## Description
+This is a gambling game that was played in cheap casinos in frontier America, using five dice.  The combinations or hands used are similar to Poker but with some omissions.
 
-1. The player rolls the dice for the banker.
-2. The player rolls the dice for themselves.
-3. The hands are calculated by finding the pairs of dice and adding their values together.
-4. The winner is determined by the player with the higher hand.
+This was also my midterm project for my C++ class in college.
+
+## How to Play
+A banker rolls the dice first and the player then roll the dice trying to beat the combination first thrown.
+  
+Only one throw is allowed. Numbers rank high to low as 1, 6, 5, 4, 3, 2.  
+
+Any die not used in a combination is ignored.  If a player rolls a combination equal to the banker's, the banker wins. The payoffs are made by the banker at even odds. i.e. player gets their stake back with an equal amount.  Winning combinations in descending order are as follows.
+
+* `Five-of-a-kind`
+* `Four-of-a-kind`
+* `Full House (Three-of-a-kind and a pair)`
+* `Three-of-a-kind`
+* `Two pairs`
+* `One pair`
 
 ## Code Flow
 
